@@ -55,6 +55,15 @@ app.post("/add_user", async (req, res) => {
   });
 });
 
+app.get("/retrieve_users", (req, res) => {
+  const usersData = "SELECT * FROM details";
+
+  connectDB.query(usersData, (err, data) => {
+    if (err) res.json(err);
+    return res.json(data);
+  });
+});
+
 app.listen(port, () => {
   console.log(`Server listening on port http://localhost:${port}...`);
 });
