@@ -64,6 +64,16 @@ app.get("/retrieve_users", (req, res) => {
   });
 });
 
+app.get("/get_user/:id", (req, res) => {
+  const id = req.params.id;
+  const userData = "SELECT * FROM details WHERE `id`=?";
+
+  connectDB.query(userData, [id], (err, data) => {
+    if (err) res.json(err);
+    return res.json(data);
+  });
+});
+
 app.listen(port, () => {
   console.log(`Server listening on port http://localhost:${port}...`);
 });
