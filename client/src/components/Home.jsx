@@ -4,17 +4,32 @@ import { Link } from "react-router-dom";
 
 const Home = () => {
   const [data, setData] = useState([]);
+  const [deleted, setDeleted] = useState(true);
 
   useEffect(() => {
+    if (deleted) {
+      setDeleted(false);
+
+      axios
+        .get("http://localhost:5000/retrieve_users")
+        .then((resp) => {
+          setData(resp.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    }
+  }, [deleted]);
+
+  const handleDelete = (id) => {
     axios
-      .get("http://localhost:5000/retrieve_users")
+      .delete(`http://localhost:5000/delete_user/${id}`)
       .then((resp) => {
-        setData(resp.data);
+        setDeleted(true);
+        console.log(resp.data);
       })
-      .catch((err) => {
-        console.log(err);
-      });
-  }, []);
+      .catch((err) => console.log(err));
+  };
 
   return (
     <div className="container-fluid bg-primary vh-100 vw-100">

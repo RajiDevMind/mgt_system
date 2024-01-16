@@ -84,6 +84,15 @@ app.post("/edit_user/:id", (req, res) => {
     return res.json(data);
   });
 });
+app.delete("/delete_user/:id", (req, res) => {
+  const id = req.params.id;
+  const userData = "DELETE FROM details WHERE `id`=?";
+
+  connectDB.query(userData, [id], (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
+  });
+});
 
 app.listen(port, () => {
   console.log(`Server listening on port http://localhost:${port}...`);
