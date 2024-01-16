@@ -8,12 +8,6 @@ const app = express();
 const port = process.env.PORT || 5000;
 
 // middlewares
-// app.use((req, res, next) => {
-//   res.header("Access-Control-Allow-Origin", "*"); // '*' allows any origin, replace with your specific origin if needed
-//   res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
-//   res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
-//   next();
-// });
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(cookieParser());
@@ -21,7 +15,7 @@ app.use(cookieParser());
 app.use(
   cors({
     credentials: true,
-    origin: "http://localhost:3001",
+    origin: "http://localhost:3000",
     methods: ["GET", "POST", "PATCH", "DELETE"],
   })
 );
@@ -52,6 +46,51 @@ app.post("/add_user", async (req, res) => {
   connectDB.query(createUser, userDetails, (err, data) => {
     if (err) return res.status(500).json(err);
     return res.status(200).json(`${req.body.name} added successfully!`);
+  });
+});
+
+app.get("/retrieve_users", (req, res) => {
+  const usersData = "SELECT * FROM details";
+
+  connectDB.query(usersData, (err, data) => {
+    if (err) res.json(err);
+    return res.json(data);
+  });
+});
+
+app.get("/get_user/:id", (req, res) => {
+  const id = req.params.id;
+  const userData = "SELECT * FROM details WHERE `id`=?";
+
+  connectDB.query(userData, [id], (err, data) => {
+    if (err) res.json(err);
+    return res.json(data);
+  });
+});
+
+app.post("/edit_user/:id", (req, res) => {
+  const id = req.params.id;
+  const userData =
+    "UPDATE details SET `name`=?,`email`=?, `age`=?, `gender`=? WHERE `id`=?";
+  const userDetails = [
+    req.body.name,
+    req.body.email,
+    req.body.age,
+    req.body.gender,
+    id,
+  ];
+  connectDB.query(userData, userDetails, (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
+  });
+});
+app.delete("/delete_user/:id", (req, res) => {
+  const id = req.params.id;
+  const userData = "DELETE FROM details WHERE `id`=?";
+
+  connectDB.query(userData, [id], (err, data) => {
+    if (err) return res.json(err);
+    return res.json(data);
   });
 });
 
