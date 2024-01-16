@@ -4,20 +4,18 @@ import { Link } from "react-router-dom";
 
 const Home = () => {
   const [data, setData] = useState([]);
+
   useEffect(() => {
-    getUsers();
-  }, []);
-  const getUsers = async () => {
-    await axios
+    axios
       .get("http://localhost:5000/retrieve_users")
       .then((resp) => {
         setData(resp.data);
-        console.log(resp.data);
       })
       .catch((err) => {
         console.log(err);
       });
-  };
+  }, []);
+
   return (
     <div className="container-fluid bg-primary vh-100 vw-100">
       <div className="d-flex justify-content-end">
@@ -53,7 +51,11 @@ const Home = () => {
                     <Link className="btn btn-success" to={`/edit/${user.id}`}>
                       EDIT
                     </Link>
-                    <button className="btn btn-danger" to={`/`}>
+                    <button
+                      onClick={() => handleDelete(user.id)}
+                      className="btn btn-danger"
+                      to={`/`}
+                    >
                       DELETE
                     </button>
                   </td>
